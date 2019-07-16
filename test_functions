@@ -1,0 +1,18 @@
+import unittest
+import helpers as h
+import os
+
+class test_functions(unittest.TestCase):
+    """
+    Test the functions themselves
+    """
+
+    def test_calculate(self):
+        try:
+            h.calculate()
+        except Exception:
+            self.assertTrue(False, "The calculate function failed!")
+
+    def test_output(self):
+        self.assertTrue(os.stat("test.txt").st_size != 0, "The test.txt file has nothing written to it,"
+                                                          "it must have failed!")
