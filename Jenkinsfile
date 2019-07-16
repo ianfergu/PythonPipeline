@@ -1,14 +1,24 @@
 pipeline {
     agent none
     stages {
-        stage('Build') {
+        stage("Build") {
             agent {
                 docker {
-                    image 'python:2-alpine'
+                    image 'ifergu/python-barcode:firsttry'
                 }
             }
             steps {
-                sh 'python -m py_compile sources/weather.py'
+                sh 'python -m py_compile download.py upload.py helpers.py main.py'
+            }
+        }
+        stage("Download Data") {
+            agent {
+                docker {
+                    image 'ifergu/python-barcode:firsttry'
+                }
+            }
+            steps {
+                sh 'python download.py'
             }
         }
         stage('Initiate Tester') {
@@ -17,36 +27,23 @@ pipeline {
                     image 'qnib/pytest'
                 }
             }
-
             stages {
                 stage('Testing') {
-		    stage('Web Test') {
-		    	steps {
-				sh 'py.test --verbose --junit-xml test-reports/results_web.xml sources/test_webtest.py'
-				}
-			post {
-			    always {
-			    	junit 'test-reports/results_web.xml'
-				}
-			    }
-		    }
                     parallel {
-                        stage('URL Test') {
+                        stage('Download Test') {
                             steps {
-                                sh 'py.test --verbose --junit-xml test-reports/results_url.xml sources/test_url.py'
+                                sh 'py.test --verbose --junit-xml test-reports/results_download.xml test_data_downloaded.py'
                             }
-
                             post {
                                 always {
-                                    junit 'test-reports/results_url.xml'
+                                    junit 'test-reports/results_download.xml'
                                 }
                             }
                         }
-                        stage('Weather Test') {
+                        stage('Functions Test') {
                             steps {
-                                sh 'py.test --verbose --junit-xml test-reports/results.xml sources/test_weather.py'
+                                sh 'py.test --verbose --junit-xml test-reports/results.xml test_functions.py'
                             }
-
                             post {
                                 always {
                                     junit 'test-reports/results.xml'
@@ -57,19 +54,15 @@ pipeline {
                 }
             }
         }
-        stage('Deliver') {
+        stage('Upload Results') {
             agent {
                 docker {
-                    image 'cdrx/pyinstaller-linux:python2'
+                    image 'ifergu/python-barcode:firsttry'
                 }
             }
             steps {
-                sh 'pyinstaller --onefile sources/weather.py '
-            }
-            post {
-                success {
-                    archiveArtifacts 'dist/weather.py'
-                }
+                sh 'python helpers.py'
+                sh 'python upload.py'
             }
         }
     }

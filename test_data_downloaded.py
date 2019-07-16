@@ -1,6 +1,7 @@
 import unittest
 import os
 
+
 class test_data_downloaded(unittest.TestCase):
     """
     Checks that there was actually something downloaded before running other tests!
