@@ -2,23 +2,15 @@ pipeline {
     agent none
     stages {
         stage("Build") {
-            agent {
-                docker {
-                    image 'ifergu/python-barcode:firsttry'
-                }
-            }
             steps {
                 sh 'python -m py_compile download.py upload.py helpers.py main.py'
+                echo 'Code has been compiled!'
             }
         }
         stage("Download Data") {
-            agent {
-                docker {
-                    image 'ifergu/python-barcode:firsttry'
-                }
-            }
             steps {
                 sh 'python download.py'
+                echo 'Downloading from Artifactory complete'
             }
         }
         stage('Initiate Tester') {

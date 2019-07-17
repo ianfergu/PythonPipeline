@@ -3,8 +3,9 @@ import download as d
 import helpers as h
 
 """
-This simply downloads, calculates, and then uploads the restults in one fell swoop.
+This simply downloads, calculates, and then uploads the results in one fell swoop.
 """
+
 
 def main():
     d.download()

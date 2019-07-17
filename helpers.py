@@ -1,9 +1,10 @@
 import random
 
 """
-Helper functions that calculate the average of the list of numebers,
+Helper functions that calculate the average of the list of numbers,
 and then writes that value to test.txt
 """
+
 
 def calculate():
     numbers = open("old.txt", "r")
