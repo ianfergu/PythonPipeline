@@ -9,6 +9,7 @@ pipeline {
         }
         stage("Download Data") {
             steps {
+	    	sh 'pwd'
 	    	sh 'pip list'
                 sh 'python download.py'
                 echo 'Downloading from Artifactory complete'
